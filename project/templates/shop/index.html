@@ -1,0 +1,32 @@
+{% extends "shop/base.html" %}
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<h1>Магазин</h1>
+
+<h2>Категории</h2>
+<ul>
+  {% for c in categories %}
+    <li><a href="{% url 'shop:category' c.slug %}">{{ c.name }}</a></li>
+  {% empty %}
+    <li class="muted">Категорий нет</li>
+  {% endfor %}
+</ul>
+
+<h2>Новые товары</h2>
+<div class="grid">
+  {% for p in products %}
+    <div class="card">
+      <div><a href="{% url 'shop:product' p.slug %}">{{ p.name }}</a></div>
+      <div class="muted">{{ p.price }} ₽</div>
+      <div class="muted">Остаток: {{ p.stock }}</div>
+      <form action="{% url 'shop:add_to_cart' p.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" {% if p.stock <= 0 %}disabled{% endif %}>В корзину</button>
+      </form>
+    </div>
+  {% empty %}
+    <p class="muted">Товаров нет</p>
+  {% endfor %}
+</div>
+{% endblock %}

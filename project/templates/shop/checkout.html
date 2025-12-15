@@ -1,0 +1,37 @@
+{% extends "shop/base.html" %}
+{% block title %}Оформление{% endblock %}
+
+{% block content %}
+<h1>Оформление заказа</h1>
+
+{% if cart_empty %}
+  <p class="muted">Корзина пуста. Сначала добавьте товары.</p>
+  <p><a href="{% url 'shop:home' %}">На главную</a></p>
+{% else %}
+  <form method="post" style="display:grid;gap:10px;max-width:520px;">
+    {% csrf_token %}
+
+    {{ form.non_field_errors }}
+
+    <div>
+      <label>ФИО</label><br>
+      {{ form.full_name }}
+      {{ form.full_name.errors }}
+    </div>
+
+    <div>
+      <label>Телефон</label><br>
+      {{ form.phone }}
+      {{ form.phone.errors }}
+    </div>
+
+    <div>
+      <label>Адрес</label><br>
+      {{ form.address }}
+      {{ form.address.errors }}
+    </div>
+
+    <button type="submit">Создать заказ</button>
+  </form>
+{% endif %}
+{% endblock %}

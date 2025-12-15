@@ -1,0 +1,29 @@
+{% extends "shop/base.html" %}
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+<h1>Вход</h1>
+
+<form method="post" style="display:grid;gap:10px;max-width:420px;">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div>
+    <label>Логин</label><br>
+    {{ form.username }}
+    {{ form.username.errors }}
+  </div>
+
+  <div>
+    <label>Пароль</label><br>
+    {{ form.password }}
+    {{ form.password.errors }}
+  </div>
+
+  <button type="submit">Войти</button>
+
+  <div class="muted">
+    <a href="{% url 'password_reset' %}">Забыли пароль?</a>
+  </div>
+</form>
+{% endblock %}

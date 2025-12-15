@@ -1,0 +1,28 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ product.name }}</h1>
+
+{% if product.image %}
+  <p><img src="{{ product.image }}" alt="{{ product.name }}" style="max-width:320px;border-radius:10px;"></p>
+{% endif %}
+
+<p><b>Цена:</b> {{ product.price }} ₽</p>
+<p><b>Остаток:</b> {{ product.stock }}</p>
+
+{% if product.description %}
+  <p>{{ product.description }}</p>
+{% endif %}
+
+<form action="{% url 'shop:add_to_cart' product.id %}" method="post" style="display:flex;gap:10px;align-items:center;">
+  {% csrf_token %}
+  <label>Кол-во</label>
+  <input type="number" name="qty" value="1" min="1">
+  <button type="submit" {% if product.stock <= 0 %}disabled{% endif %}>Добавить в корзину</button>
+</form>
+
+<p style="margin-top:10px;">
+  <a href="{% url 'shop:cart' %}">Перейти в корзину</a>
+</p>
+{% endblock %}

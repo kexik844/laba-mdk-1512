@@ -1,0 +1,56 @@
+{% extends "shop/base.html" %}
+{% block title %}{{ category.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ category.name }}</h1>
+
+<form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;">
+  <div>
+    <label>Поиск</label><br>
+    <input name="q" value="{{ q|default:'' }}" placeholder="Название или описание">
+  </div>
+
+  <div>
+    <label>Сортировка</label><br>
+    <select name="sort">
+      <option value="new" {% if sort == 'new' %}selected{% endif %}>Новизна</option>
+      <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Цена ↑</option>
+      <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Цена ↓</option>
+    </select>
+  </div>
+
+  <button type="submit">Применить</button>
+  <a href="{% url 'shop:category' category.slug %}">Сброс</a>
+</form>
+
+<hr>
+
+<div class="grid">
+  {% for p in products %}
+    <div class="card">
+      <div><a href="{% url 'shop:product' p.slug %}">{{ p.name }}</a></div>
+      <div class="muted">{{ p.price }} ₽</div>
+      <div class="muted">Остаток: {{ p.stock }}</div>
+      <form action="{% url 'shop:add_to_cart' p.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" {% if p.stock <= 0 %}disabled{% endif %}>В корзину</button>
+      </form>
+    </div>
+  {% empty %}
+    <p class="muted">Ничего не найдено</p>
+  {% endfor %}
+</div>
+
+{# Если сделал пагинацию (доп. задание) #}
+{% if is_paginated %}
+  <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;">
+    {% if page_obj.has_previous %}
+      <a href="?q={{ q }}&sort={{ sort }}&page={{ page_obj.previous_page_number }}">Назад</a>
+    {% endif %}
+    <span class="muted">Стр. {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?q={{ q }}&sort={{ sort }}&page={{ page_obj.next_page_number }}">Вперёд</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}
